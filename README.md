@@ -21,7 +21,6 @@ A dataset is available in the repository, in the `dataset` directory and it cont
 
 ## Usage
 `python3 train_tempoMAGE.py`
-
 ```
 train_tempoMAGE.py 
      -t/--training_data <full path for the training dataset FILES>
@@ -29,8 +28,8 @@ train_tempoMAGE.py
      -e/--epochs <EPOCHS>
      -s/--save <whether or not to save the trained model>
 ```
-`python3 test_tempoMAGE.py`
 
+`python3 test_tempoMAGE.py`
 ```
 test_tempoMAGE.py 
      -t/--testing_data <full path for the testing dataset FILES>
