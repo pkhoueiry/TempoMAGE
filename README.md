@@ -20,8 +20,11 @@ A dataset is available in the repository, in the `dataset` directory and it cont
 - tempoMAGE_savedmodel.tar.xz: the saved model the can be used to predict or test the model.
 
 ## Train TempoMAGE on training data
-Use the following command to train the model on th training dataset:
+Use the following command to train the model on the training dataset:
+
 `python3 train_tempoMAGE.py -t training_data/ -o output_dir/ -e 1 -s yes`
 
 ## Test TempoMAGE on test data
+Use the following command to test the model on the test dataset:
+
 `python3 test_tempoMAGE.py -t testing_data/ -o out_test/ -m tempoMAGE_savedmodel/`
