@@ -16,7 +16,7 @@ To train or test TempoMAGE, you need to install the following dependencies:
 ## Dataset
 A dataset is available in the repository, in the `dataset` directory and it contains the following:
 - `training_data.tar.xz`: this is the training_set that can be used to train the model. this is only used to demonstrate how the model performs from epoch to another.
-- `test_data.tar.xz`: this is the test set used to test the already saved model.
+- `testing_data.tar.xz`: this is the test set used to test the already saved model.
 - `tempoMAGE_savedmodel.tar.xz`: the saved model the can be used to predict or test the model.
 
 ## Usage
@@ -50,7 +50,7 @@ python3 train_tempoMAGE.py \
 ```
 
 ## Test TempoMAGE on test data
-To test the already saved model, extract `test_data.tar.xz` and `tempoMAGE_savedmodel.tar.xz` and use the following command:
+To test the already saved model, extract `testing_data.tar.xz` and `tempoMAGE_savedmodel.tar.xz` and use the following command:
 
 ```
 python3 test_tempoMAGE.py \
