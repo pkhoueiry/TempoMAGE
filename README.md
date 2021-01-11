@@ -2,7 +2,7 @@
 TEMPOral data Prediction of histone Modifications in Accessible GEnome
 
 ## Dependencies
-To train or test TempoMAGE, you need to have install the following dependencies:
+To train or test TempoMAGE, you need to install the following dependencies:
 - tensorflow 2.1.0
 - matplotlib
 - skleanr
