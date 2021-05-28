@@ -40,7 +40,7 @@ from load_data import plot_prc, plot_roc, plot_cm, prepare_training_data
 
 
 METRICS = set_metrics()
-EPOCHS = 50
+default_EPOCHS = 50
 BATCH_SIZE = 500
 early_stopping = tf.keras.callbacks.EarlyStopping(
     monitor='val_binary_crossentropy', 
@@ -55,11 +55,6 @@ datapath=""
 plotpath=""
 EPOCHS=""
 save_model=""
-
-if EPOCHS == "":
-    EPOCHS = 50
-else:
-    EPOCHS = EPOCHS
 
 
 for opt, arg in opts:        
@@ -83,30 +78,36 @@ for opt, arg in opts:
     elif opt in ('-s', '--save'):
         save_model = arg
 
+if EPOCHS == "":
+    print("Training with default number of epochs = {}".format(default_EPOCHS))
+    EPOCHS = default_EPOCHS
+else:
+    print("Training with user-defined number of epochs = {}".format(EPOCHS))
+    EPOCHS = EPOCHS
 
 # Load the training dataset
 print("Preparing training and validation data... \n")
-(depth_train, depth_val, exp_train, exp_val, time_train,
- time_val, seq_train, seq_val, y_train, y_val,train_bed, val_bed)= prepare_training_data(datapath)
+(depth_train, depth_val, exp_train, exp_val, weight_train,
+ weight_val, seq_train, seq_val, y_train, y_val,train_bed, val_bed)= prepare_training_data(datapath)
 
 
 tempoMAGE = tempoMAGE(metrics=METRICS)
 print("Starting tempoMAGE training at: " + datetime.now().strftime("%Y%m%d_%H:%M"))
-history = tempoMAGE.fit([seq_train, depth_train,exp_train, time_train],[y_train],
+history = tempoMAGE.fit([seq_train, depth_train,exp_train, weight_train],[y_train],
                          epochs= EPOCHS, batch_size= BATCH_SIZE,
-                         validation_data=([seq_val, depth_val,exp_val, time_val],[y_val]),
+                         validation_data=([seq_val, depth_val,exp_val, weight_val],[y_val]),
                          verbose=1, callbacks=[early_stopping])
 print("Finished tempoMAGE training at: " + datetime.now().strftime("%Y%m%d_%H:%M"))
 
 # get model predictions
 print("Running predictions on validation data:")
-validation_results = tempoMAGE.evaluate([seq_val, depth_val, exp_val, time_val], y_val,
+validation_results = tempoMAGE.evaluate([seq_val, depth_val, exp_val, weight_val], y_val,
                                   batch_size=BATCH_SIZE, verbose=1)
 validation_results = np.around(validation_results, decimals=3)
 for name, value in zip(tempoMAGE.metrics_names,validation_results):
   print(name, ': ', value)
 print()
-y_pred = tempoMAGE.predict([seq_val, depth_val, exp_val, time_val], batch_size=BATCH_SIZE)
+y_pred = tempoMAGE.predict([seq_val, depth_val, exp_val, weight_val], batch_size=BATCH_SIZE)
 y_pred = np.around(y_pred, decimals=2)
 # assign prediction score of validation data to the output bed file
 val_bed['Score'] = y_pred
@@ -137,7 +138,7 @@ plot_cm(y_val, y_pred)
 plt.savefig(os.path.join(plotpath,"confusion_matrix.pdf"))
 
 print("The Score column in file \"validation_prediction.bed\" contains the predicted class for each tile in the validation dataset.\n")
-print("Score > 0.5 = predicted True Tile;Score < 0.5 = predicted False Tile ")
+print("Score > 0.5 = predicted positive Tile;Score < 0.5 = predicted negative Tile ")
 if save_model in('yes','Yes','YES','y','Y'):
   tempoMAGE.save(os.path.join(plotpath,'tempoMAGE_savedmodel'))
 

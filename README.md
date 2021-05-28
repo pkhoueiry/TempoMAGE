@@ -44,7 +44,7 @@ To train the model on the training set, extract `training_data.tar.xz` and use t
 python3 train_tempoMAGE.py \
     -t training_data/ \
     -o output_dir/ \
-    -e 1 \
+    -e 50 \
     -s yes
 ```
 

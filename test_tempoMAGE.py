@@ -68,7 +68,7 @@ for opt, arg in opts:
 
 # Load the test dataset
 print("Preparing test dataset... \n")
-(depth_test, exp_test, time_test,seq_test,y_test,test_bed)= prepare_test_data(datapath)
+(depth_test, exp_test, weight_test,seq_test,y_test,test_bed)= prepare_test_data(datapath)
 
 #Load tempoMAGE from saved model
 print("Loading tempoMAGE saved model \n")
@@ -80,13 +80,13 @@ tempoMAGE.compile(loss='binary_crossentropy',
 
 # get model predictions
 print("Running tempoMAGE predictions on test dataset \n")
-test_results = tempoMAGE.evaluate([seq_test, depth_test, exp_test, time_test], y_test,
+test_results = tempoMAGE.evaluate([seq_test, depth_test, exp_test, weight_test], y_test,
                                   batch_size=BATCH_SIZE, verbose=1)
 test_results = np.around(test_results, decimals=3)
 for name, value in zip(tempoMAGE.metrics_names,test_results):
   print(name, ': ', value)
 print()
-y_pred = tempoMAGE.predict([seq_test, depth_test, exp_test, time_test], batch_size=BATCH_SIZE)
+y_pred = tempoMAGE.predict([seq_test, depth_test, exp_test, weight_test], batch_size=BATCH_SIZE)
 y_pred = np.around(y_pred, decimals=2)
 # assign prediction score of validation data to the output bed file
 test_bed['Score'] = y_pred
@@ -117,6 +117,6 @@ plot_cm(y_test, y_pred)
 plt.savefig(os.path.join(plotpath,"testdata_confusion_matrix.pdf"))
 
 print("The Score column in file \"test_prediction.bed\" contains the predicted class for each tile in the test dataset.")
-print("Score > 0.5 = predicted True Tile;Score < 0.5 = predicted False Tile ")
+print("Score > 0.5 = predicted positive Tile;Score < 0.5 = predicted negative Tile ")
 print("Done!")
 

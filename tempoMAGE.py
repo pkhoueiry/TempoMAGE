@@ -53,23 +53,23 @@ def tempoMAGE(metrics, output_bias= None):
     depth_features = keras.layers.Flatten()(x)
     
     x = layers.concatenate([sequence_features, depth_features])
-    conv_dense = keras.layers.Dense(118, activation = 'relu')(x)
+    conv_dense = keras.layers.Dense(108, activation = 'relu')(x)
     
     expression_input = keras.Input(shape=(20,1), name= 'expression')
     expression_features = keras.layers.Flatten()(expression_input)
     
-    time_input = keras.Input(shape=(1,1), name= 'time')
-    time_features = keras.layers.Flatten()(time_input)
+    weight_input = keras.Input(shape=(1,1), name= 'weight')
+    weight_features = keras.layers.Flatten()(weight_input)
     
-    x = layers.concatenate([expression_features, time_features])
-    data_dense = keras.layers.Dense(10,activation = 'relu')(x)
+    x = layers.concatenate([expression_features, weight_features])
+    data_dense = keras.layers.Dense(20,activation = 'relu')(x)
     
     x = layers.concatenate([conv_dense, data_dense])
     x = keras.layers.Dense(128, activation = 'relu',
                          kernel_regularizer=tf.keras.regularizers.l2(0.0005))(x)
     x = keras.layers.Dropout(0.3)(x)
     seq_pred = keras.layers.Dense(1, activation='sigmoid',bias_initializer= output_bias)(x)
-    model = keras.Model(inputs=[seq_input,depth_input,expression_input, time_input], outputs= seq_pred)
+    model = keras.Model(inputs=[seq_input,depth_input,expression_input, weight_input], outputs= seq_pred)
     model.compile(loss='binary_crossentropy',
                  optimizer=keras.optimizers.Adam(0.001),
                  metrics= metrics)
