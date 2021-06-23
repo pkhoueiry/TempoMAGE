@@ -1,6 +1,6 @@
 #!/usr/bin/python
 '''
-Testing tempoMAGE from saved tempMAGE model
+Testing tempoMAGE from saved tempoMAGE model
  and generating performance plots
 
 '''
@@ -19,7 +19,6 @@ if len(sys.argv)==1:
         sys.exit()
 
 import numpy as np
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 mpl.rcParams['figure.figsize'] = (5, 5)
@@ -28,7 +27,6 @@ colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 import sklearn
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import confusion_matrix, classification_report
-
 import tensorflow as tf 
 from tensorflow import keras
 import tempoMAGE
@@ -36,11 +34,9 @@ from tempoMAGE import tempoMAGE,set_metrics
 import load_data
 from load_data import plot_prc, plot_roc, plot_cm, prepare_test_data
 
-
 METRICS = set_metrics()
 EPOCHS = 50
 BATCH_SIZE = 500
-
 
 opts, args = getopt.getopt(sys.argv[1:],'ht:o:m:',['help','testing_data=','output_dir=','model=',])
 

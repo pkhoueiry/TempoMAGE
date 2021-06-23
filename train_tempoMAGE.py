@@ -1,6 +1,6 @@
 #!/usr/bin/python
 '''
-Training tempoMAGE and generating perfromance plots
+Training tempoMAGE and generating performance plots
 
 '''
 
@@ -20,7 +20,6 @@ if len(sys.argv)==1:
         sys.exit()
 
 import numpy as np
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 mpl.rcParams['figure.figsize'] = (5, 5)
@@ -29,15 +28,12 @@ colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 import sklearn
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import confusion_matrix, classification_report
-
 import tensorflow as tf 
 from tensorflow import keras
 import tempoMAGE
 from tempoMAGE import tempoMAGE,set_metrics
 import load_data
 from load_data import plot_prc, plot_roc, plot_cm, prepare_training_data
-
-
 
 METRICS = set_metrics()
 default_EPOCHS = 50

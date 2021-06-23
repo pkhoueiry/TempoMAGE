@@ -7,17 +7,13 @@ Data loading and pre-processing functions
 import os
 import glob
 import tempfile
-
 import numpy as np
 import pandas as pd
 import re
 from Bio import SeqIO
 import pyranges as pr
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
-
 import sklearn
 from sklearn.metrics import roc_curve
 from sklearn.metrics import roc_auc_score
@@ -64,42 +60,53 @@ def load_sequence_data(inputPath, sequenceFile):
 
 def prepare_training_data(datapath,validation_split=0.1):
     """ Wrapper function to load the training dataset """
+    
     print("Loading and encoding the read-depth data")
     depth_train = np.array(pd.read_csv(os.path.join(datapath,'train_depth.txt'),sep="\t", header = None))
     depth_train = depth_train.reshape(depth_train.shape[0],depth_train.shape[1], 1)
     print("Finished loading and encoding the read-depth data")
+
     print("Loading and encoding the gene-expression data")
     exp_train = np.array(pd.read_csv(os.path.join(datapath,'train_expression.txt'),sep="\t", header = None))
     exp_train = exp_train.reshape(exp_train.shape[0], exp_train.shape[1],1)
     print("Finished loading and encoding the gene-expression data")
+
     print("Loading and encoding the reference time-point data")
     time_train = np.array(pd.read_csv(os.path.join(datapath,'train_ref.txt'),sep="\t", header = None))
     time_train = time_train.reshape(time_train.shape[0], time_train.shape[1], 1)
     print("Finished loading and encoding the reference time-point data")
-    print("Loading and one-hot encoding the sequence data")
+
+    print("Loading foldchange data")
     foldchange_train = np.array(pd.read_csv(os.path.join(datapath,'train_foldchange.txt'),sep="\t", header = None))
     foldchange_train = foldchange_train.reshape(foldchange_train.shape[0], foldchange_train.shape[1], 1)
     print("Finished loading and encoding the foldchange data")
+
     print("Loading and one-hot encoding the sequence data")
     weight_train = time_train*foldchange_train
     seq_train, y_train = load_sequence_data(datapath, 'train_sequences.csv')
     print("The number of positive and negative tiles in the train dataset is:")
     print(y_train.value_counts())
+    
     train_bed= pr.read_bed(os.path.join(datapath,"train_tiles.bed"),
                                 as_df=True)
+
     print('Splitting data into: {}% training and {}% validation\n'.format(
         (1- validation_split)*100, validation_split *100))
+    
     (depth_train,depth_val,seq_train,seq_val,exp_train,exp_val,y_train,y_val,weight_train,
     weight_val, train_bed, val_bed) = train_test_split(depth_train,seq_train,exp_train,y_train,weight_train,train_bed,
     test_size = validation_split, random_state = 50)
+
     print('Training labels shape:', y_train.shape)
     print('Validation labels shape:', y_val.shape)
     print('Training features shape:', depth_train.shape, seq_train.shape, exp_train.shape, weight_train.shape)
     print('Validation features shape:', depth_val.shape, seq_val.shape, exp_val.shape, weight_val.shape)
+
     return depth_train, depth_val, exp_train, exp_val, weight_train, weight_val, seq_train, seq_val, y_train, y_val,train_bed, val_bed
 
 def prepare_test_data(datapath):
     """ Wrapper function to load the test dataset """
+
     print("Loading and encoding the test dataset")
     depth_test = np.array(pd.read_csv(os.path.join(datapath,'test_depth.txt'),sep="\t", header = None))
     depth_test = depth_test.reshape(depth_test.shape[0],depth_test.shape[1], 1)
@@ -113,10 +120,11 @@ def prepare_test_data(datapath):
     seq_test, y_test = load_sequence_data(datapath, 'test_sequences.csv')
     test_bed= pr.read_bed(os.path.join(datapath,"test_tiles.bed"),
                                 as_df=True)
+
     print('Test labels shape:', y_test.shape)
     print('Test features shape:', depth_test.shape, seq_test.shape, exp_test.shape, weight_test.shape)
-    return depth_test, exp_test, weight_test, seq_test, y_test, test_bed
 
+    return depth_test, exp_test, weight_test, seq_test, y_test, test_bed
 
 def plot_roc(name, labels, predictions, **kwargs):
     """ auROC plotting function """ 

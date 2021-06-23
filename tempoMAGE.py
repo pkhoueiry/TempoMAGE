@@ -1,7 +1,6 @@
 #!/usr/bin/python
 """ TempMAGE model architecture """
 
-
 import tensorflow as tf 
 from tensorflow import keras
 from tensorflow.keras import layers 
@@ -32,25 +31,33 @@ def tempoMAGE(metrics, output_bias= None):
     x = keras.layers.Conv2D(filters=32, kernel_size=(10,5), padding='valid', activation='relu',
                            kernel_regularizer=tf.keras.regularizers.l2(0.0001))(seq_input)
     x = keras.layers.MaxPooling2D(pool_size=(2,1))(x)
+
     x = keras.layers.Conv2D(filters=64, kernel_size=(2,1), padding='valid', activation='relu',
                            kernel_regularizer=tf.keras.regularizers.l2(0.0005))(x)
     x = keras.layers.MaxPooling2D(pool_size=(2,1))(x)
+
     x = keras.layers.Conv2D(filters=128, kernel_size=(2,1), padding='valid', activation='relu',
                           kernel_regularizer=tf.keras.regularizers.l2(0.0005) )(x)
     x = keras.layers.MaxPooling2D(pool_size=(2,1))(x)
+
     sequence_features = keras.layers.Flatten()(x)
- 
+
+    
     depth_input = keras.Input(shape=(400,1), name= 'depth')
     x = keras.layers.Conv1D(filters= 32, kernel_size=(5), padding='valid', activation='relu',
                            kernel_regularizer=tf.keras.regularizers.l2(0.0001))(depth_input)
     x = keras.layers.MaxPooling1D(pool_size=(2))(x)
+
     x = keras.layers.Conv1D(filters= 64, kernel_size=(2), padding='valid', activation='relu',
                            kernel_regularizer=tf.keras.regularizers.l2(0.0005))(x)
     x = keras.layers.MaxPooling1D(pool_size=(2))(x)
+
     x = keras.layers.Conv1D(filters= 128, kernel_size=(2), padding='valid', activation='relu',
                            kernel_regularizer=tf.keras.regularizers.l2(0.0005))(x)
     x = keras.layers.MaxPooling1D(pool_size=(2))(x)
+
     depth_features = keras.layers.Flatten()(x)
+
     
     x = layers.concatenate([sequence_features, depth_features])
     conv_dense = keras.layers.Dense(108, activation = 'relu')(x)
@@ -68,10 +75,14 @@ def tempoMAGE(metrics, output_bias= None):
     x = keras.layers.Dense(128, activation = 'relu',
                          kernel_regularizer=tf.keras.regularizers.l2(0.0005))(x)
     x = keras.layers.Dropout(0.3)(x)
+
     seq_pred = keras.layers.Dense(1, activation='sigmoid',bias_initializer= output_bias)(x)
+
     model = keras.Model(inputs=[seq_input,depth_input,expression_input, weight_input], outputs= seq_pred)
+
     model.compile(loss='binary_crossentropy',
                  optimizer=keras.optimizers.Adam(0.001),
                  metrics= metrics)
+
     return model
     
